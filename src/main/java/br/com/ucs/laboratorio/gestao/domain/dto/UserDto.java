@@ -1,0 +1,22 @@
+package br.com.ucs.laboratorio.gestao.domain.dto;
+
+import br.com.ucs.laboratorio.gestao.domain.type.UserType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+@AllArgsConstructor
+public class UserDto {
+
+    private String email;
+
+    private String password;
+
+    private UserType userType;
+
+    private String name;
+
+    private Long laboratoryId;
+}

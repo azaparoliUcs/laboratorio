@@ -30,7 +30,7 @@ public class LaboratoryService {
     public LaboratoryResponse create(LaboratoryDto laboratoryDto) {
         var block = blockService.findById(laboratoryDto.getBlockId());
         var laboratoryModel = modelMapper.map(laboratoryDto, LaboratoryModel.class);
-        laboratoryModel.setBlock(block);
+        laboratoryModel.setBlockId(block.getId());
         var save = laboratoryRepository.save(laboratoryModel);
         return modelMapper.map(save, LaboratoryResponse.class);
     }

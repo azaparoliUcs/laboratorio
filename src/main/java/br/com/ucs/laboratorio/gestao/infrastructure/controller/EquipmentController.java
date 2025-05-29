@@ -2,6 +2,8 @@ package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.EquipmentDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.EventResponse;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.TemplateResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.EquipmentService;
 import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,11 @@ public class EquipmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EquipmentResponse> findById(@PathVariable Long id){
-        return ResponseEntity.ok(MapperUtil.mapObject(equipmentService.findById(id), EquipmentResponse.class));
+        var model = equipmentService.findById(id);
+        var response = MapperUtil.mapObject(model, EquipmentResponse.class);
+        response.setModelo(MapperUtil.mapObject(model.getTemplate(), TemplateResponse.class));
+        response.setEvents(MapperUtil.mapList(model.getEvents(), EventResponse.class));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping

@@ -20,7 +20,7 @@ public class EquipmentDto {
 
     private String equipmentTag;
 
-    private TemplateModel template;
+    private Long templateId;
 
     private Long laboratoryId;
 }

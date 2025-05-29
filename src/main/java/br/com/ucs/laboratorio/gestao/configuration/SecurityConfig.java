@@ -4,6 +4,7 @@ import br.com.ucs.laboratorio.gestao.configuration.auth.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +28,7 @@ public class SecurityConfig {
                 .headers().frameOptions().sameOrigin()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeHttpRequests() // Habilita a autorização para as requisições HTTP
+                .and().authorizeHttpRequests()
                 .requestMatchers("/user/login",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
@@ -35,11 +36,7 @@ public class SecurityConfig {
                         "/v3/api-docs.yaml",
                         "/swagger-resources/**",
                         "/webjars/**").permitAll()
-//                .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-//                .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRATOR")
-//                .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
                 .anyRequest().authenticated()
-
                 .and().addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

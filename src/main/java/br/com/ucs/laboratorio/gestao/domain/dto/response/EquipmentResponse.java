@@ -22,7 +22,7 @@ public class EquipmentResponse {
 
     private String equipmentTag;
 
-    private TemplateModel modelo;
+    private TemplateResponse modelo;
 
     private List<EventResponse> events;
 }

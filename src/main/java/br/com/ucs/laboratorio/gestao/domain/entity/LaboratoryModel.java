@@ -27,7 +27,6 @@ public class LaboratoryModel {
     @OneToMany(mappedBy = "laboratory")
     private List<EquipmentModel> equipmentModels;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_BLOCO")
-    private BlockModel block;
+    @Column(name = "ID_BLOCO")
+    private Long blockId;
 }

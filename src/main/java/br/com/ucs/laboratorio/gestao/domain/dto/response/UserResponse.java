@@ -1,7 +1,10 @@
 package br.com.ucs.laboratorio.gestao.domain.dto.response;
 
 import br.com.ucs.laboratorio.gestao.domain.type.UserType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

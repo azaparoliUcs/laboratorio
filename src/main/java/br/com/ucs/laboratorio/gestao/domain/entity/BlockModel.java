@@ -27,5 +27,5 @@ public class BlockModel implements Serializable {
 
     @OneToMany
     @JoinColumn(name = "ID_LABORATORIO")
-    private List<LaboratoryModel> laboratory;
+    private List<LaboratoryModel> laboratories;
 }

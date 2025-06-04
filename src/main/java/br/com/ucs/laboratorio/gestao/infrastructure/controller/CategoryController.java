@@ -31,4 +31,15 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponse>> findAll(){
         return ResponseEntity.ok(categoryService.findAll());
     }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<CategoryResponse> update(@PathVariable Long id, @RequestBody CategoryDto categoryDto){
+        return ResponseEntity.ok(categoryService.update(id, categoryDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

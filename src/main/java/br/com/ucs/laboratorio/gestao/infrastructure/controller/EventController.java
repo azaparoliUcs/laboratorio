@@ -31,4 +31,15 @@ public class EventController {
     public ResponseEntity<List<EventResponse>> findAll(){
         return ResponseEntity.ok(eventService.findAll());
     }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<EventResponse> update(@PathVariable Long id, @RequestBody EventDto eventDto){
+        return ResponseEntity.ok(eventService.update(id, eventDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        eventService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

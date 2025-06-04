@@ -20,7 +20,13 @@ public class EventResponse {
 
     private LocalDate eventDate;
 
-    private String description;
+    private Long requestNumber;
+
+    private Boolean calibrationRequested;
+
+    private String status;
+
+    private String observation;
 
     private BigDecimal costValue;
 

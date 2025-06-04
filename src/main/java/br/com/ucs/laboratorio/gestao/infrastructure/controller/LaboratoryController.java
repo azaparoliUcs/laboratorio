@@ -1,9 +1,7 @@
 package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.LaboratoryDto;
-import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
-import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
 import br.com.ucs.laboratorio.gestao.domain.service.LaboratoryService;
 import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,22 @@ public class LaboratoryController {
     public ResponseEntity<LaboratoryResponse> findById(@PathVariable Long id){
         var model = laboratoryService.findById(id);
         var response = MapperUtil.mapObject(model, LaboratoryResponse.class);
-        response.setEquipments(MapperUtil.mapList(model.getEquipmentModels(), EquipmentResponse.class));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<LaboratoryResponse>> findAll(){
         return ResponseEntity.ok(laboratoryService.findAll());
+    }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<LaboratoryResponse> update(@PathVariable Long id, @RequestBody LaboratoryDto laboratoryDto){
+        return ResponseEntity.ok(laboratoryService.update(id, laboratoryDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        laboratoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

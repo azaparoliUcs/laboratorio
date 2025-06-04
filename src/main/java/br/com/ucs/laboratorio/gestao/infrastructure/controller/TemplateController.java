@@ -31,4 +31,15 @@ public class TemplateController {
     public ResponseEntity<List<TemplateResponse>> findAll(){
         return ResponseEntity.ok(templateService.findAll());
     }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<TemplateResponse> update(@PathVariable Long id, @RequestBody TemplateDto templateDto){
+        return ResponseEntity.ok(templateService.update(id, templateDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        templateService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

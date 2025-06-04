@@ -31,4 +31,15 @@ public class BlockController {
     public ResponseEntity<List<BlockResponse>> findAll(){
         return ResponseEntity.ok(blockService.findAll());
     }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<BlockResponse> update(@PathVariable Long id, @RequestBody BlockDto blockDto){
+        return ResponseEntity.ok(blockService.update(id, blockDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        blockService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

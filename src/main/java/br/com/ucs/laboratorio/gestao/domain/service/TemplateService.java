@@ -3,6 +3,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 import br.com.ucs.laboratorio.gestao.domain.dto.TemplateDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.TemplateResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.TemplateModel;
+import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.TemplateRepository;
 import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.modelmapper.ModelMapper;
@@ -32,10 +33,22 @@ public class TemplateService {
     }
 
     public TemplateModel findById(Long id) {
-        return templateRepository.findById(id).orElseThrow(() -> new RuntimeException("Modelo nao existe"));
+        return templateRepository.findById(id).orElseThrow(() -> new BusinessException("Modelo nao existe"));
     }
 
     public List<TemplateResponse> findAll() {
         return MapperUtil.mapList(templateRepository.findAll(), TemplateResponse.class);
+    }
+
+    public void delete(Long id) {
+        templateRepository.delete(findById(id));
+    }
+
+    public TemplateResponse update(Long id, TemplateDto templateDto) {
+        TemplateModel template = findById(id);
+        template.setPeriodMaintenanceType(templateDto.getPeriodMaintenanceType());
+        template.setPeriodCalibrationType(templateDto.getPeriodCalibrationType());
+        template.setDescription(templateDto.getDescription());
+        return MapperUtil.mapObject(templateRepository.save(template), TemplateResponse.class);
     }
 }

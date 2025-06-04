@@ -5,13 +5,16 @@ import br.com.ucs.laboratorio.gestao.configuration.auth.UserDetailsImpl;
 import br.com.ucs.laboratorio.gestao.domain.dto.UserDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.UserResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
+import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.UserRepository;
+import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +33,9 @@ public class UserService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private JwtUtil jwtTokenService;
 
     public String authenticateUser(UserDto loginUserDto) {
@@ -46,7 +52,7 @@ public class UserService {
     public UserResponse createUser(UserDto userDto) {
         var userPresent = userRepository.findByEmail(userDto.getEmail()).isPresent();
         if (userPresent){
-            throw new RuntimeException("Usuario ja existe");
+            throw new BusinessException("Usuario ja existe");
         }
         var passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
@@ -59,6 +65,19 @@ public class UserService {
     }
 
     public UserModel findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao existe"));
+        return userRepository.findById(id).orElseThrow(() -> new BusinessException("Usuario nao existe"));
+    }
+
+    public void delete(Long id) {
+        UserModel user = findById(id);
+        userRepository.delete(user);
+    }
+
+    public UserResponse update(Long id, UserDto userDto) {
+        UserModel user = findById(id);
+        user.setUserType(userDto.getUserType());
+        user.setLaboratory(laboratoryService.findById(userDto.getLaboratoryId()));
+        user.setName(userDto.getName());
+        return MapperUtil.mapObject(userRepository.save(user), UserResponse.class);
     }
 }

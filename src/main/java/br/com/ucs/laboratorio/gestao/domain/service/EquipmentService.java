@@ -38,4 +38,21 @@ public class EquipmentService {
     public List<EquipmentResponse> findAll() {
         return MapperUtil.mapList(equipmentRepository.findAll(), EquipmentResponse.class);
     }
+
+    public List<EquipmentResponse> findByLaboratoryId(Long id) {
+        var laboratory = laboratoryService.findById(id);
+        return MapperUtil.mapList(laboratory.getEquipments(), EquipmentResponse.class);
+    }
+
+    public void delete(Long id) {
+        equipmentRepository.delete(findById(id));
+    }
+
+    public EquipmentResponse update(Long id, EquipmentDto equipmentDto) {
+        EquipmentModel equipment = findById(id);
+        equipment.setLaboratory(laboratoryService.findById(equipmentDto.getLaboratoryId()));
+        equipment.setEquipmentTag(equipmentDto.getEquipmentTag());
+        equipment.setPropertyNumber(equipmentDto.getPropertyNumber());
+        return MapperUtil.mapObject(equipmentRepository.save(equipment), EquipmentResponse.class);
+    }
 }

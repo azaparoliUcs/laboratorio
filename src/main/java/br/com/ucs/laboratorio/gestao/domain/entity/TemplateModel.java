@@ -1,8 +1,10 @@
 package br.com.ucs.laboratorio.gestao.domain.entity;
 
-import br.com.ucs.laboratorio.gestao.domain.converter.PeriodTypeConverter;
+import br.com.ucs.laboratorio.gestao.domain.converter.PeriodCalibrationTypeConverter;
+import br.com.ucs.laboratorio.gestao.domain.converter.PeriodMaintenanceTypeConverter;
 import br.com.ucs.laboratorio.gestao.domain.converter.TemplateTypeConverter;
-import br.com.ucs.laboratorio.gestao.domain.type.PeriodType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodCalibrationType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodMaintenanceType;
 import br.com.ucs.laboratorio.gestao.domain.type.TemplateType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,21 +25,28 @@ public class TemplateModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "DS_IDENTIFICACAO")
-    private String identification;
-
     @Column(name = "DS_DESCRICAO")
     private String description;
 
     @Column(name = "DS_MARCA")
     private String brand;
 
-    @Column(name = "NR_PERIODO_MANUTENCAO")
-    private Integer maintenancePeriod;
+    @Column(name = "TP_PERIODO_CALIBRACAO")
+    @Convert(converter = PeriodCalibrationTypeConverter.class)
+    private PeriodCalibrationType periodCalibrationType;
 
-    @Column(name = "TP_PERIODO")
-    @Convert(converter = PeriodTypeConverter.class)
-    private PeriodType periodType;
+    @Column(name = "TP_PERIODO_MANUTENCAO_PREV")
+    @Convert(converter = PeriodMaintenanceTypeConverter.class)
+    private PeriodMaintenanceType periodMaintenanceType;
+
+    @Column(name = "DS_CA_CALIBRACAO")
+    private String calibrationCriterion;
+
+    @Column(name = "DS_CA_VERIFICACAO")
+    private String verificationCriterion;
+
+    @Column(name = "DS_CAPACIDADE_MEDICAO")
+    private String capacityMeasurement;
 
     @Column(name = "TP_MODELO")
     @Convert(converter = TemplateTypeConverter.class)

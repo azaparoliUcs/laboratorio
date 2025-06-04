@@ -1,6 +1,7 @@
 package br.com.ucs.laboratorio.gestao.configuration.auth;
 
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
+import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        UserModel user = userRepository.findByEmail(username).orElseThrow(() -> new BusinessException("Email incorreto"));
         return new UserDetailsImpl(user);
     }
 

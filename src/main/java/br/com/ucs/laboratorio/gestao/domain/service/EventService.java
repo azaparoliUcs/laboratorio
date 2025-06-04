@@ -3,6 +3,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 import br.com.ucs.laboratorio.gestao.domain.dto.EventDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EventResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.EventModel;
+import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EventRepository;
 import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.modelmapper.ModelMapper;
@@ -32,10 +33,21 @@ public class EventService {
     }
 
     public EventModel findById(Long id) {
-        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Evento nao existe"));
+        return eventRepository.findById(id).orElseThrow(() -> new BusinessException("Evento nao existe"));
     }
 
     public List<EventResponse> findAll() {
         return MapperUtil.mapList(eventRepository.findAll(), EventResponse.class);
+    }
+
+    public void delete(Long id) {
+        eventRepository.delete(findById(id));
+    }
+
+    public EventResponse update(Long id, EventDto eventDto) {
+        EventModel event = findById(id);
+        event.setCertificateNumber(eventDto.getCertificateNumber());
+        event.setCostValue(eventDto.getCostValue());
+        return MapperUtil.mapObject(eventRepository.save(event), EventResponse.class);
     }
 }

@@ -1,6 +1,7 @@
 package br.com.ucs.laboratorio.gestao.domain.dto;
 
-import br.com.ucs.laboratorio.gestao.domain.type.PeriodType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodCalibrationType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodMaintenanceType;
 import br.com.ucs.laboratorio.gestao.domain.type.TemplateType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +22,15 @@ public class TemplateDto {
 
     private String brand;
 
-    private Integer maintenancePeriod;
+    private PeriodCalibrationType periodCalibrationType;
 
-    private PeriodType periodType;
+    private String capacityMeasurement;
+
+    private String verificationCriterion;
+
+    private String calibrationCriterion;
+
+    private PeriodMaintenanceType periodMaintenanceType;
 
     private TemplateType templateType;
 

@@ -20,11 +20,6 @@ public class UserController {
         return ResponseEntity.ok(userService.authenticateUser(authRequest));
     }
 
-    @GetMapping("/hello")
-    public ResponseEntity<String> get(){
-        return ResponseEntity.ok("HELLO");
-    }
-
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody UserDto userDto){
         return ResponseEntity.ok(userService.createUser(userDto));
@@ -33,5 +28,16 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(@PathVariable Long id){
         return ResponseEntity.ok(MapperUtil.mapObject(userService.findById(id), UserResponse.class));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    private ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserDto userDto){
+        return ResponseEntity.ok(userService.update(id, userDto));
     }
 }

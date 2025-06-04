@@ -25,7 +25,7 @@ public class LaboratoryModel {
     private String room;
 
     @OneToMany(mappedBy = "laboratory")
-    private List<EquipmentModel> equipmentModels;
+    private List<EquipmentModel> equipments;
 
     @Column(name = "ID_BLOCO")
     private Long blockId;

@@ -1,7 +1,6 @@
 package br.com.ucs.laboratorio.gestao.domain.converter;
 
 import br.com.ucs.laboratorio.gestao.domain.type.EventType;
-import br.com.ucs.laboratorio.gestao.domain.type.UserType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

@@ -3,6 +3,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 import br.com.ucs.laboratorio.gestao.domain.dto.LaboratoryDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
+import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.LaboratoryRepository;
 import br.com.ucs.laboratorio.gestao.util.MapperUtil;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,7 @@ public class LaboratoryService {
     private ModelMapper modelMapper;
 
     public LaboratoryModel findById(Long id){
-        return laboratoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Laboratorio nao existe"));
+        return laboratoryRepository.findById(id).orElseThrow(() -> new BusinessException("Laboratorio nao existe"));
     }
 
     public LaboratoryResponse create(LaboratoryDto laboratoryDto) {
@@ -37,5 +38,15 @@ public class LaboratoryService {
 
     public List<LaboratoryResponse> findAll() {
         return MapperUtil.mapList(laboratoryRepository.findAll(), LaboratoryResponse.class);
+    }
+
+    public LaboratoryResponse update(Long id, LaboratoryDto laboratoryDto) {
+        LaboratoryModel laboratory = findById(id);
+        laboratory.setRoom(laboratoryDto.getRoom());
+        return MapperUtil.mapObject(laboratoryRepository.save(laboratory), LaboratoryResponse.class);
+    }
+
+    public void delete(Long id) {
+        laboratoryRepository.delete(findById(id));
     }
 }

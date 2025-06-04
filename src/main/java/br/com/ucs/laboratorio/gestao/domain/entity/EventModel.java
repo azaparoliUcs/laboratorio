@@ -24,15 +24,24 @@ public class EventModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "NR_SOLICITACAO")
+    private Long requestNumber;
+
+    @Column(name = "FL_CALIBRACAO")
+    private Boolean calibrationRequested;
+
+    @Column(name = "DS_STATUS")
+    private String status;
+
+    @Column(name = "DS_OBSERVACAO")
+    private String observation;
+
     @Column(name = "TP_TIPO_EVENTO")
     @Convert(converter = EventTypeConverter.class)
     private EventType eventType;
 
     @Column(name = "DT_EVENTO")
     private LocalDate eventDate;
-
-    @Column(name = "DS_DESCRICAO")
-    private String description;
 
     @Column(name = "VL_CUSTO")
     private BigDecimal costValue;

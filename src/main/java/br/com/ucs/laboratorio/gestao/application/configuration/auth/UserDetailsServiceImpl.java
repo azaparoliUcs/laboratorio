@@ -1,7 +1,7 @@
-package br.com.ucs.laboratorio.gestao.configuration.auth;
+package br.com.ucs.laboratorio.gestao.application.configuration.auth;
 
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
-import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
+import br.com.ucs.laboratorio.gestao.application.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

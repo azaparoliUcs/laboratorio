@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.configuration.auth;
+package br.com.ucs.laboratorio.gestao.application.configuration.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

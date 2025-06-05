@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.configuration.auth;
+package br.com.ucs.laboratorio.gestao.application.configuration.auth;
 
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.infrastructure.exception;
+package br.com.ucs.laboratorio.gestao.application.exception;
 
 public class BusinessException  extends RuntimeException {
 

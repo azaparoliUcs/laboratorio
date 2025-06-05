@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.configuration;
+package br.com.ucs.laboratorio.gestao.application.configuration;
 
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;

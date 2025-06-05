@@ -4,7 +4,7 @@ import br.com.ucs.laboratorio.gestao.domain.dto.LaboratoryDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
 import br.com.ucs.laboratorio.gestao.domain.service.LaboratoryService;
-import br.com.ucs.laboratorio.gestao.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

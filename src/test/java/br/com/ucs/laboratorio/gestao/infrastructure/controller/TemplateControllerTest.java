@@ -4,7 +4,7 @@ import br.com.ucs.laboratorio.gestao.domain.dto.TemplateDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.TemplateResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.TemplateModel;
 import br.com.ucs.laboratorio.gestao.domain.service.TemplateService;
-import br.com.ucs.laboratorio.gestao.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

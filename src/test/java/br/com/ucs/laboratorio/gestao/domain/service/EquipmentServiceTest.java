@@ -5,7 +5,7 @@ import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
 import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EquipmentRepository;
-import br.com.ucs.laboratorio.gestao.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

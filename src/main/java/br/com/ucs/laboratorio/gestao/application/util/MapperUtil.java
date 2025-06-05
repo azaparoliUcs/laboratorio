@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.util;
+package br.com.ucs.laboratorio.gestao.application.util;
 
 import org.modelmapper.ModelMapper;
 

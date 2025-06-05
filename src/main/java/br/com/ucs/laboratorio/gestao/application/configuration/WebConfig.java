@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.configuration;
+package br.com.ucs.laboratorio.gestao.application.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

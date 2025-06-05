@@ -1,15 +1,15 @@
 package br.com.ucs.laboratorio.gestao.domain.service;
 
-import br.com.ucs.laboratorio.gestao.configuration.auth.JwtUtil;
-import br.com.ucs.laboratorio.gestao.configuration.auth.UserDetailsImpl;
+import br.com.ucs.laboratorio.gestao.application.configuration.auth.JwtUtil;
+import br.com.ucs.laboratorio.gestao.application.configuration.auth.UserDetailsImpl;
 import br.com.ucs.laboratorio.gestao.domain.dto.UserDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.UserResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
 import br.com.ucs.laboratorio.gestao.domain.type.UserType;
-import br.com.ucs.laboratorio.gestao.infrastructure.exception.BusinessException;
+import br.com.ucs.laboratorio.gestao.application.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.UserRepository;
-import br.com.ucs.laboratorio.gestao.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

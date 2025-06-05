@@ -1,4 +1,4 @@
-package br.com.ucs.laboratorio.gestao.infrastructure.exception;
+package br.com.ucs.laboratorio.gestao.application.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

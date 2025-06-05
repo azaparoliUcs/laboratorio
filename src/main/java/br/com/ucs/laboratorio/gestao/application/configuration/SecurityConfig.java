@@ -1,6 +1,6 @@
-package br.com.ucs.laboratorio.gestao.configuration;
+package br.com.ucs.laboratorio.gestao.application.configuration;
 
-import br.com.ucs.laboratorio.gestao.configuration.auth.JwtAuthFilter;
+import br.com.ucs.laboratorio.gestao.application.configuration.auth.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

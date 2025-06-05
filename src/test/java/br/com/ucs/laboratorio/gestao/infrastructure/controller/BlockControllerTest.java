@@ -4,7 +4,7 @@ import br.com.ucs.laboratorio.gestao.domain.dto.BlockDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.BlockResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.BlockModel;
 import br.com.ucs.laboratorio.gestao.domain.service.BlockService;
-import br.com.ucs.laboratorio.gestao.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -20,8 +20,6 @@ public class TemplateResponse {
 
     private String brand;
 
-    private Integer maintenancePeriod;
-
     private PeriodCalibrationType periodCalibrationType;
 
     private String capacityMeasurement;

@@ -9,7 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class EquipmentService {
@@ -22,6 +25,8 @@ public class EquipmentService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    public static final Map<Long, List<EquipmentModel>> EXPIRATION_CACHE = new ConcurrentHashMap<>();
 
     public EquipmentModel findById(Long id) {
         return equipmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Equipamento nao existe"));
@@ -54,5 +59,18 @@ public class EquipmentService {
         equipment.setEquipmentTag(equipmentDto.getEquipmentTag());
         equipment.setPropertyNumber(equipmentDto.getPropertyNumber());
         return MapperUtil.mapObject(equipmentRepository.save(equipment), EquipmentResponse.class);
+    }
+
+    public List<EquipmentResponse> findExpirationEquipment(Long id) {
+        if(EXPIRATION_CACHE.containsKey(id)){
+            return MapperUtil.mapList(EXPIRATION_CACHE.get(id), EquipmentResponse.class);
+        }
+
+        LocalDate finalDate = LocalDate.now().plusDays(30);
+        var equipments = equipmentRepository.findExpiration(id, LocalDate.now(), finalDate);
+
+        EXPIRATION_CACHE.put(id, equipments);
+
+        return MapperUtil.mapList(equipments, EquipmentResponse.class);
     }
 }

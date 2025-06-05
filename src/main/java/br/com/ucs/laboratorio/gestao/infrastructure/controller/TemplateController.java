@@ -33,7 +33,7 @@ public class TemplateController {
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity<TemplateResponse> update(@PathVariable Long id, @RequestBody TemplateDto templateDto){
+    public ResponseEntity<TemplateResponse> update(@PathVariable Long id, @RequestBody TemplateDto templateDto){
         return ResponseEntity.ok(templateService.update(id, templateDto));
     }
 

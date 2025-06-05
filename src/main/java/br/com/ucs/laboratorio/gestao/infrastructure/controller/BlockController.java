@@ -33,7 +33,7 @@ public class BlockController {
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity<BlockResponse> update(@PathVariable Long id, @RequestBody BlockDto blockDto){
+    public ResponseEntity<BlockResponse> update(@PathVariable Long id, @RequestBody BlockDto blockDto){
         return ResponseEntity.ok(blockService.update(id, blockDto));
     }
 

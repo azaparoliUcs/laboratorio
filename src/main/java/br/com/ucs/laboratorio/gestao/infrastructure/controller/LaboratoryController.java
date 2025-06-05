@@ -35,7 +35,7 @@ public class LaboratoryController {
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity<LaboratoryResponse> update(@PathVariable Long id, @RequestBody LaboratoryDto laboratoryDto){
+    public ResponseEntity<LaboratoryResponse> update(@PathVariable Long id, @RequestBody LaboratoryDto laboratoryDto){
         return ResponseEntity.ok(laboratoryService.update(id, laboratoryDto));
     }
 

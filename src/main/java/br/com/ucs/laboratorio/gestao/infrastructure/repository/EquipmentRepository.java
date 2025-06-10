@@ -18,4 +18,7 @@ public interface EquipmentRepository extends JpaRepository<EquipmentModel, Long>
     List<EquipmentModel> findExpiration(@Param("laboratoryId") Long laboratoryId,
                                         @Param("initialDate") LocalDate initialDate,
                                         @Param("finalDate") LocalDate finalDate);
+
+    @Query("SELECT e FROM EquipmentModel e WHERE e.nextCalibrationDate = :date")
+    List<EquipmentModel> findEquipmentsExpired(LocalDate date);
 }

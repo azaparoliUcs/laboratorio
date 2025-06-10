@@ -3,6 +3,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 import br.com.ucs.laboratorio.gestao.domain.dto.EquipmentDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
+import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EquipmentRepository;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.modelmapper.ModelMapper;
@@ -72,5 +73,11 @@ public class EquipmentService {
         EXPIRATION_CACHE.put(id, equipments);
 
         return MapperUtil.mapList(equipments, EquipmentResponse.class);
+    }
+
+    public void updateStatus(Long id){
+        EquipmentModel equipment = findById(id);
+        equipment.setEquipmentStatusType(EquipmentStatusType.AVAILABLE);
+        equipmentRepository.save(equipment);
     }
 }

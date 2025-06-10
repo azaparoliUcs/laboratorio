@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EventService {
@@ -46,8 +47,12 @@ public class EventService {
 
     public EventResponse update(Long id, EventDto eventDto) {
         EventModel event = findById(id);
+        if (Objects.nonNull(eventDto.getCertificateNumber())){
+            equipmentService.updateStatus(eventDto.getEquipmentId());
+        }
         event.setCertificateNumber(eventDto.getCertificateNumber());
         event.setCostValue(eventDto.getCostValue());
+        event.setObservation(eventDto.getObservation());
         return MapperUtil.mapObject(eventRepository.save(event), EventResponse.class);
     }
 }

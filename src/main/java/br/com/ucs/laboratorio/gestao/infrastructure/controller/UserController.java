@@ -1,6 +1,7 @@
 package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.UserDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.TokenResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.UserResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.UserService;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
@@ -16,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> createAuthenticationToken(@RequestBody UserDto authRequest) {
+    public ResponseEntity<TokenResponse> createAuthenticationToken(@RequestBody UserDto authRequest) {
         return ResponseEntity.ok(userService.authenticateUser(authRequest));
     }
 

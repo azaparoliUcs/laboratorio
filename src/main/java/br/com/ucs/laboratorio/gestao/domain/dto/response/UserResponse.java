@@ -2,12 +2,12 @@ package br.com.ucs.laboratorio.gestao.domain.dto.response;
 
 import br.com.ucs.laboratorio.gestao.domain.type.UserType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
@@ -20,5 +20,5 @@ public class UserResponse {
 
     private String name;
 
-    private LaboratoryResponse laboratory;
+    private Long laboratoryId;
 }

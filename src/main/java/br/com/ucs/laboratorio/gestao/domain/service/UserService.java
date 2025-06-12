@@ -3,6 +3,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 import br.com.ucs.laboratorio.gestao.application.configuration.auth.JwtUtil;
 import br.com.ucs.laboratorio.gestao.application.configuration.auth.UserDetailsImpl;
 import br.com.ucs.laboratorio.gestao.domain.dto.UserDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.TokenResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.UserResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
 import br.com.ucs.laboratorio.gestao.application.exception.BusinessException;
@@ -38,7 +39,7 @@ public class UserService {
     @Autowired
     private JwtUtil jwtTokenService;
 
-    public String authenticateUser(UserDto loginUserDto) {
+    public TokenResponse authenticateUser(UserDto loginUserDto) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(), loginUserDto.getPassword());
 
@@ -46,7 +47,10 @@ public class UserService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return jwtTokenService.generateToken(userDetails);
+        var tokenResponse = MapperUtil.mapObject(userDetails.getUser(), TokenResponse.class);
+        tokenResponse.setToken(jwtTokenService.generateToken(userDetails));
+
+        return tokenResponse;
     }
 
     public UserResponse createUser(UserDto userDto) {

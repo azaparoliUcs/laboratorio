@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public enum UserType {
 
     RESPONSIBLE(1, "RESPONSAVEL"),
-    TECHNICAL(2, "TECNICO");
+    ADMIN(2, "ADMINISTRADOR");
 
     private final Integer code;
     private final String description;

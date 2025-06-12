@@ -64,15 +64,15 @@ class UserServiceTest {
         userDto.setPassword("password");
 
         Authentication auth = mock(Authentication.class);
-        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
+        UserDetailsImpl userDetails = new UserDetailsImpl(new UserModel());
 
         when(authenticationManager.authenticate(any())).thenReturn(auth);
         when(auth.getPrincipal()).thenReturn(userDetails);
         when(jwtTokenService.generateToken(userDetails)).thenReturn("jwt-token");
 
-        String token = userService.authenticateUser(userDto);
+        var token = userService.authenticateUser(userDto);
 
-        assertEquals("jwt-token", token);
+        assertEquals("jwt-token", token.getToken());
     }
 
     @Test

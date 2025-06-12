@@ -1,6 +1,7 @@
 package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.UserDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.TokenResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.UserResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.UserModel;
 import br.com.ucs.laboratorio.gestao.domain.service.UserService;
@@ -31,11 +32,13 @@ public class UserControllerTest {
     @Test
     void testLogin() {
         UserDto dto = new UserDto();
-        when(userService.authenticateUser(dto)).thenReturn("token");
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setToken("token");
+        when(userService.authenticateUser(dto)).thenReturn(tokenResponse);
 
         var result = userController.createAuthenticationToken(dto);
 
-        assertEquals("token", result.getBody());
+        assertEquals("token", result.getBody().getToken());
         assertEquals(200, result.getStatusCodeValue());
     }
 

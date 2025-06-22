@@ -1,6 +1,8 @@
 package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.LaboratoryDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerResponse;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryEventTotalizerResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.LaboratoryService;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,6 +35,11 @@ public class LaboratoryController {
     @GetMapping
     public ResponseEntity<List<LaboratoryResponse>> findAll(){
         return ResponseEntity.ok(laboratoryService.findAll());
+    }
+
+    @GetMapping("/total/{id}")
+    public ResponseEntity<LaboratoryEventTotalizerResponse> total(@PathVariable Long id, @RequestParam LocalDate initialDate, @RequestParam LocalDate finalDate){
+        return ResponseEntity.ok(laboratoryService.totalEvents(id, initialDate, finalDate));
     }
 
     @PutMapping("/{id}")

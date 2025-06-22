@@ -1,6 +1,8 @@
 package br.com.ucs.laboratorio.gestao.domain.entity;
 
+import br.com.ucs.laboratorio.gestao.domain.converter.EventStatusTypeConverter;
 import br.com.ucs.laboratorio.gestao.domain.converter.EventTypeConverter;
+import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
 import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,8 +32,9 @@ public class EventModel {
     @Column(name = "FL_CALIBRACAO")
     private Boolean calibrationRequested;
 
-    @Column(name = "DS_STATUS")
-    private String status;
+    @Column(name = "CD_STATUS")
+    @Convert(converter = EventStatusTypeConverter.class)
+    private EventStatusType status;
 
     @Column(name = "DS_OBSERVACAO")
     private String observation;

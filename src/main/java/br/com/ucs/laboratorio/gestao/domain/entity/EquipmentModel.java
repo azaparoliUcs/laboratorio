@@ -49,9 +49,6 @@ public class EquipmentModel {
     @Column(name = "DT_PROXIMA_MANUTENCAO")
     private LocalDate nextMaintenanceDate;
 
-    @Column(name = "ID_EVENTO")
-    private Long lastEventId;
-
     @ManyToOne
     @JoinColumn(name = "ID_MODELO")
     private TemplateModel template;

@@ -15,8 +15,8 @@ public enum EquipmentStatusType {
     AVAILABLE(1, "Disponivel"),
     UNAVAILABLE(2, "Indisponivel");
 
-    private Integer code;
-    private String description;
+    private final Integer code;
+    private final String description;
 
     private static final Map<Integer, EquipmentStatusType> EQUIPMENT_CODES = Arrays.stream(EquipmentStatusType.values())
             .collect(Collectors.toMap(EquipmentStatusType::getCode, Function.identity()));

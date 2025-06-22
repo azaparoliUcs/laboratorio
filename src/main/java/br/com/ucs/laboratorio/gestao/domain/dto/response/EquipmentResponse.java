@@ -32,5 +32,7 @@ public class EquipmentResponse {
 
     private TemplateResponse template;
 
+    private boolean calibrationExpiring;
+
     private List<EventResponse> events;
 }

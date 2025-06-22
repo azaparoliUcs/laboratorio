@@ -1,5 +1,7 @@
 package br.com.ucs.laboratorio.gestao.domain.dto;
 
+import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
+import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +18,7 @@ public class EventDto {
 
     private Long id;
 
-    private String eventType;
+    private EventType eventType;
 
     private LocalDate eventDate;
 
@@ -24,7 +26,7 @@ public class EventDto {
 
     private Boolean calibrationRequested;
 
-    private String status;
+    private EventStatusType status;
 
     private String observation;
 

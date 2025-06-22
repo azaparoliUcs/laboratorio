@@ -1,6 +1,8 @@
 package br.com.ucs.laboratorio.gestao.domain.service;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.LaboratoryDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerResponse;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryEventTotalizerResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.LaboratoryModel;
 import br.com.ucs.laboratorio.gestao.application.exception.BusinessException;
@@ -10,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,11 +26,10 @@ public class LaboratoryService {
     private BlockService blockService;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private EventService eventService;
 
-    public LaboratoryModel findById(Long id){
-        return laboratoryRepository.findById(id).orElseThrow(() -> new BusinessException("Laboratorio nao existe"));
-    }
+    @Autowired
+    private ModelMapper modelMapper;
 
     public LaboratoryResponse create(LaboratoryDto laboratoryDto) {
         var block = blockService.findById(laboratoryDto.getBlockId());
@@ -34,6 +37,10 @@ public class LaboratoryService {
         laboratoryModel.setBlockId(block.getId());
         var save = laboratoryRepository.save(laboratoryModel);
         return modelMapper.map(save, LaboratoryResponse.class);
+    }
+
+    public LaboratoryModel findById(Long id){
+        return laboratoryRepository.findById(id).orElseThrow(() -> new BusinessException("Laboratorio nao existe"));
     }
 
     public List<LaboratoryResponse> findAll() {
@@ -48,5 +55,19 @@ public class LaboratoryService {
 
     public void delete(Long id) {
         laboratoryRepository.delete(findById(id));
+    }
+
+    public LaboratoryEventTotalizerResponse totalEvents(Long id, LocalDate initialDate, LocalDate finalDate) {
+        var laboratory = findById(id);
+        var listEquipment = laboratory.getEquipments().stream()
+                            .map(equip -> eventService.totalEvents(equip.getId(), initialDate, finalDate))
+                            .toList();
+
+        var total = listEquipment.stream()
+                .map(EventTotalizerResponse::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new LaboratoryEventTotalizerResponse(total, listEquipment);
+
     }
 }

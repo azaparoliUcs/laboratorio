@@ -1,5 +1,7 @@
 package br.com.ucs.laboratorio.gestao.domain.entity;
 
+import br.com.ucs.laboratorio.gestao.domain.converter.EquipmentStatusTypeConverter;
+import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,10 @@ public class EquipmentModel {
     @Column(name = "ID_EQUIPAMENTO")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "CD_STATUS")
+    @Convert(converter = EquipmentStatusTypeConverter.class)
+    private EquipmentStatusType equipmentStatusType;
 
     @Column(name = "DS_IDENTIFICACAO")
     private String identification;
@@ -50,7 +56,4 @@ public class EquipmentModel {
     @ManyToOne
     @JoinColumn(name = "ID_LABORATORIO")
     private LaboratoryModel laboratory;
-
-    @OneToMany(mappedBy = "equipment")
-    private List<EventModel> events;
 }

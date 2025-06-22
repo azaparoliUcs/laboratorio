@@ -2,12 +2,14 @@ package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.EventDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EventResponse;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.EventService;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,6 +27,11 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<EventResponse> findById(@PathVariable Long id){
         return ResponseEntity.ok(MapperUtil.mapObject(eventService.findById(id), EventResponse.class));
+    }
+
+    @GetMapping("/total/{id}")
+    public ResponseEntity<EventTotalizerResponse> total(@PathVariable Long id, @RequestParam LocalDate initialDate, @RequestParam LocalDate finalDate){
+        return ResponseEntity.ok(eventService.totalEvents(id, initialDate, finalDate));
     }
 
     @GetMapping

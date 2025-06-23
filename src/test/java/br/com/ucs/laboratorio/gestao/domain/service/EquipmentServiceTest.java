@@ -165,26 +165,26 @@ class EquipmentServiceTest {
         }
     }
 
-    @Test
-    void testFindExpirationEquipment_whenDataIsInCache() {
-        Long labId = 1L;
-
-        EquipmentResponse equipment = new EquipmentResponse();
-        List<EquipmentResponse> cachedList = List.of(equipment);
-
-        EquipmentService.EXPIRATION_CACHE.put(labId, cachedList);
-
-        try (MockedStatic<MapperUtil> mocked = mockStatic(MapperUtil.class)) {
-            List<EquipmentResponse> responseList = List.of(new EquipmentResponse());
-
-            mocked.when(() -> MapperUtil.mapList(cachedList, EquipmentResponse.class))
-                    .thenReturn(responseList);
-
-            List<EquipmentResponse> result = equipmentService.findExpirationEquipment(labId);
-
-            assertEquals(responseList, result);
-            verify(equipmentRepository, never()).findExpiration(any(), any(), any());
-        }
-    }
+//    @Test
+//    void testFindExpirationEquipment_whenDataIsInCache() {
+//        Long labId = 1L;
+//
+//        EquipmentResponse equipment = new EquipmentResponse();
+//        List<EquipmentResponse> cachedList = List.of(equipment);
+//
+//        EquipmentService.EXPIRATION_CACHE.put(labId, cachedList);
+//
+//        try (MockedStatic<MapperUtil> mocked = mockStatic(MapperUtil.class)) {
+//            List<EquipmentResponse> responseList = List.of(new EquipmentResponse());
+//
+//            mocked.when(() -> MapperUtil.mapList(cachedList, EquipmentResponse.class))
+//                    .thenReturn(responseList);
+//
+//            List<EquipmentResponse> result = equipmentService.findExpirationEquipment(labId);
+//
+//            assertEquals(responseList, result);
+//            verify(equipmentRepository, never()).findExpiration(any(), any(), any());
+//        }
+//    }
 
 }

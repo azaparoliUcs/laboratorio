@@ -1,5 +1,6 @@
 package br.com.ucs.laboratorio.gestao.domain.dto;
 
+import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,8 @@ public class EquipmentDto {
     private Long id;
 
     private String identification;
+
+    private EquipmentStatusType equipmentStatusType;
 
     private String propertyNumber;
 

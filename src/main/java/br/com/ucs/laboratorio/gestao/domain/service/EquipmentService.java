@@ -39,8 +39,6 @@ public class EquipmentService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public static final Map<Long, List<EquipmentResponse>> EXPIRATION_CACHE = new ConcurrentHashMap<>();
-
     public EquipmentResponse create(EquipmentDto equipmentDto){
         var laboratory = laboratoryService.findById(equipmentDto.getLaboratoryId());
         var template = templateService.findById(equipmentDto.getTemplateId());
@@ -50,6 +48,8 @@ public class EquipmentService {
         if (!template.getPeriodCalibrationType().equals(PeriodCalibrationType.NONE)){
             equipmentModel.setEquipmentStatusType(EquipmentStatusType.UNAVAILABLE);
         }
+        equipmentModel.setNextCalibrationDate(DateUtil.calculateNextPeriodCalibration(template.getPeriodCalibrationType()));
+        equipmentModel.setNextMaintenanceDate(DateUtil.calculateNextPeriodMaintenance(template.getPeriodMaintenanceType()));
 
         equipmentModel.setLaboratory(laboratory);
         var save = equipmentRepository.save(equipmentModel);
@@ -86,10 +86,6 @@ public class EquipmentService {
     }
 
     public List<EquipmentResponse> findExpirationEquipment(Long id) {
-        if(EXPIRATION_CACHE.containsKey(id)){
-            return EXPIRATION_CACHE.get(id);
-        }
-
         LocalDate finalDate = LocalDate.now().plusDays(30);
         var equipments = equipmentRepository.findExpiration(id, LocalDate.now(), finalDate);
 
@@ -97,7 +93,7 @@ public class EquipmentService {
 
         equipmentResponses.forEach(equip -> equip.setCalibrationExpiring(isBetween(equip.getNextCalibrationDate(), LocalDate.now(), finalDate)));
 
-        return EXPIRATION_CACHE.put(id, equipmentResponses);
+        return equipmentResponses;
     }
 
     public void updateStatus(Long id, EventModel eventModel){

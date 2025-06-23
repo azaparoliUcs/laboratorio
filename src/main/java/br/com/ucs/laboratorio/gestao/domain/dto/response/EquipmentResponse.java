@@ -1,5 +1,6 @@
 package br.com.ucs.laboratorio.gestao.domain.dto.response;
 
+import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,8 @@ public class EquipmentResponse {
     private Long id;
 
     private String identification;
+
+    private EquipmentStatusType equipmentStatusType;
 
     private String propertyNumber;
 

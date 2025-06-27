@@ -84,7 +84,6 @@ class LaboratoryServiceTest {
         LaboratoryResponse result = laboratoryService.create(dto);
 
         assertEquals(response, result);
-        assertEquals(10L, mapped.getBlockId());
     }
 
     @Test
@@ -107,7 +106,7 @@ class LaboratoryServiceTest {
     void testUpdate_success() {
         Long id = 1L;
         LaboratoryDto dto = new LaboratoryDto();
-        dto.setRoom("Sala 204");
+        dto.setRoomNumber("Sala 204");
 
         LaboratoryModel lab = new LaboratoryModel();
         LaboratoryModel saved = new LaboratoryModel();
@@ -122,7 +121,7 @@ class LaboratoryServiceTest {
             LaboratoryResponse result = laboratoryService.update(id, dto);
 
             assertEquals(response, result);
-            assertEquals("Sala 204", lab.getRoom());
+            assertEquals("Sala 204", lab.getRoomNumber());
         }
     }
 

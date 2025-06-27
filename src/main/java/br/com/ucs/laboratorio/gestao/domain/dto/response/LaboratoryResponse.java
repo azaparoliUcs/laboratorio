@@ -1,5 +1,6 @@
 package br.com.ucs.laboratorio.gestao.domain.dto.response;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,9 @@ public class LaboratoryResponse {
 
     private Long id;
 
-    private String room;
+    private String roomNumber;
+
+    private String roomName;
 
     private List<EquipmentResponse> equipments;
 }

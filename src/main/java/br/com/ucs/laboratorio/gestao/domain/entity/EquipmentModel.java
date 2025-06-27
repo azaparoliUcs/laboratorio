@@ -28,6 +28,9 @@ public class EquipmentModel {
     @Convert(converter = EquipmentStatusTypeConverter.class)
     private EquipmentStatusType equipmentStatusType;
 
+    @Column(name = "NM_DESCRIPTION")
+    private String description;
+
     @Column(name = "DS_IDENTIFICACAO")
     private String identification;
 

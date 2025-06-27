@@ -20,7 +20,9 @@ public class EventResponse {
 
     private EventType eventType;
 
-    private LocalDate eventDate;
+    private LocalDate requestDate;
+
+    private LocalDate finalizedDate;
 
     private Long requestNumber;
 

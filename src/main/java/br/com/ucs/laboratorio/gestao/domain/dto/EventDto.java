@@ -2,6 +2,7 @@ package br.com.ucs.laboratorio.gestao.domain.dto;
 
 import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
 import br.com.ucs.laboratorio.gestao.domain.type.EventType;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,9 @@ public class EventDto {
 
     private EventType eventType;
 
-    private LocalDate eventDate;
+    private LocalDate requestDate;
+
+    private LocalDate finalizedDate;
 
     private Long requestNumber;
 

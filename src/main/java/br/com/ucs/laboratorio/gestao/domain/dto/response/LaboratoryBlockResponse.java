@@ -5,18 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class BlockResponse implements Serializable {
-
+public class LaboratoryBlockResponse {
     private Long id;
 
-    private String description;
+    private String roomNumber;
 
-    private List<LaboratoryBlockResponse> laboratories;
+    private String roomName;
 }

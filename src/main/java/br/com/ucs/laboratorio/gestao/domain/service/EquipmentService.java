@@ -1,25 +1,20 @@
 package br.com.ucs.laboratorio.gestao.domain.service;
 
 import br.com.ucs.laboratorio.gestao.application.util.DateUtil;
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import br.com.ucs.laboratorio.gestao.domain.dto.EquipmentDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
-import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
 import br.com.ucs.laboratorio.gestao.domain.entity.EventModel;
 import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
-import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import br.com.ucs.laboratorio.gestao.domain.type.PeriodCalibrationType;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EquipmentRepository;
-import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class EquipmentService {
@@ -53,9 +48,6 @@ public class EquipmentService {
 
         equipmentModel.setLaboratory(laboratory);
         var save = equipmentRepository.save(equipmentModel);
-
-        if (save.getEquipmentStatusType().equals(EquipmentStatusType.UNAVAILABLE))
-            eventService.generateEventCalibration(save.getId());
 
         return modelMapper.map(save, EquipmentResponse.class);
     }

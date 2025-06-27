@@ -34,7 +34,7 @@ public class LaboratoryService {
     public LaboratoryResponse create(LaboratoryDto laboratoryDto) {
         var block = blockService.findById(laboratoryDto.getBlockId());
         var laboratoryModel = modelMapper.map(laboratoryDto, LaboratoryModel.class);
-        laboratoryModel.setBlockId(block.getId());
+        laboratoryModel.setBlock(block);
         var save = laboratoryRepository.save(laboratoryModel);
         return modelMapper.map(save, LaboratoryResponse.class);
     }
@@ -49,7 +49,8 @@ public class LaboratoryService {
 
     public LaboratoryResponse update(Long id, LaboratoryDto laboratoryDto) {
         LaboratoryModel laboratory = findById(id);
-        laboratory.setRoom(laboratoryDto.getRoom());
+        laboratory.setRoomNumber(laboratoryDto.getRoomNumber());
+        laboratory.setRoomName(laboratoryDto.getRoomName());
         return MapperUtil.mapObject(laboratoryRepository.save(laboratory), LaboratoryResponse.class);
     }
 

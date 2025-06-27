@@ -22,11 +22,15 @@ public class LaboratoryModel {
     private Long id;
 
     @Column(name = "DS_SALA")
-    private String room;
+    private String roomNumber;
+
+    @Column(name = "NM_SALA")
+    private String roomName;
 
     @OneToMany(mappedBy = "laboratory")
     private List<EquipmentModel> equipments;
 
-    @Column(name = "ID_BLOCO")
-    private Long blockId;
+    @ManyToOne
+    @JoinColumn(name = "ID_BLOCO")
+    private BlockModel block;
 }

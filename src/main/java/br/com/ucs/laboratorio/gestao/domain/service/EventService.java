@@ -69,19 +69,10 @@ public class EventService {
             event.setStatus(EventStatusType.FINALIZED);
         }
 
+        event.setFinalizedDate(eventDto.getFinalizedDate());
         event.setCostValue(eventDto.getCostValue());
         event.setObservation(eventDto.getObservation());
         return MapperUtil.mapObject(eventRepository.save(event), EventResponse.class);
-    }
-
-    public void generateEventCalibration(Long id) {
-        create(EventDto.builder()
-                .eventType(EventType.CALIBRATION)
-                .equipmentId(id)
-                .eventDate(LocalDate.now())
-                .status(EventStatusType.REGISTERED)
-                .build());
-
     }
 
     public EventTotalizerResponse totalEvents(Long id, LocalDate initialDate, LocalDate finalDate) {

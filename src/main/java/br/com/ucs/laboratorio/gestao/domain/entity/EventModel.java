@@ -43,8 +43,11 @@ public class EventModel {
     @Convert(converter = EventTypeConverter.class)
     private EventType eventType;
 
-    @Column(name = "DT_EVENTO")
-    private LocalDate eventDate;
+    @Column(name = "DT_SOLICITACAO")
+    private LocalDate requestDate;
+
+    @Column(name = "DT_FINALIZACAO")
+    private LocalDate finalizedDate;
 
     @Column(name = "VL_CUSTO")
     private BigDecimal costValue;

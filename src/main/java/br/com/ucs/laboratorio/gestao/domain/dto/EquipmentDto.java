@@ -20,6 +20,8 @@ public class EquipmentDto {
 
     private EquipmentStatusType equipmentStatusType;
 
+    private String description;
+
     private String propertyNumber;
 
     private String serialNumber;

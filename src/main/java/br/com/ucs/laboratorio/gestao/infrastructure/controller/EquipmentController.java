@@ -51,10 +51,10 @@ public class EquipmentController {
     }
 
     @GetMapping("filter")
-    public List<EquipmentResponse> filter(@RequestParam Long laboratoryId,
+    public ResponseEntity<List<EquipmentResponse>> filter(@RequestParam Long laboratoryId,
                                           @RequestParam(required = false) Long categoryId,
                                           @RequestParam(required = false) EquipmentStatusType status){
-        return equipmentService.filter(laboratoryId, categoryId, status);
+        return ResponseEntity.ok(equipmentService.filter(laboratoryId, categoryId, status));
     }
 
     @DeleteMapping("/{id}")

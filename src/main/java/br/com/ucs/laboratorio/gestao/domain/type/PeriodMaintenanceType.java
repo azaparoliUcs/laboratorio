@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum PeriodMaintenanceType {
 
+    NONE(0, "Não requer manutençao"),
     ONE_MONTH(1, "1 Mês"),
     TWO_MONTHS(2, "2 Meses"),
     THREE_MONTHS(3, "3 Meses"),

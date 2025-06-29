@@ -6,7 +6,10 @@ import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryEventTotalize
 import br.com.ucs.laboratorio.gestao.domain.dto.response.LaboratoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.LaboratoryService;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
+import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +41,13 @@ public class LaboratoryController {
     }
 
     @GetMapping("/total/{id}")
-    public ResponseEntity<LaboratoryEventTotalizerResponse> total(@PathVariable Long id, @RequestParam LocalDate initialDate, @RequestParam LocalDate finalDate){
-        return ResponseEntity.ok(laboratoryService.totalEvents(id, initialDate, finalDate));
+    public ResponseEntity<LaboratoryEventTotalizerResponse> total(@PathVariable Long id,
+                                                                  @RequestParam(required = false) Long categoryId,
+                                                                  @RequestParam(required = false) EventType eventType,
+                                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ){
+        return ResponseEntity.ok(laboratoryService.totalEvents(id, categoryId, eventType, startDate, endDate));
     }
 
     @PutMapping("/{id}")

@@ -5,6 +5,7 @@ import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -16,6 +17,8 @@ public class EventTotalizerItemsResponse {
     private Long id;
 
     private EventType eventType;
+
+    private LocalDate requestDate;
 
     private EventStatusType status;
 

@@ -1,9 +1,11 @@
 package br.com.ucs.laboratorio.gestao.domain.service;
 
 import br.com.ucs.laboratorio.gestao.domain.dto.EventDto;
+import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentTotalizerResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EventResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerItemsResponse;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EventTotalizerResponse;
+import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
 import br.com.ucs.laboratorio.gestao.domain.entity.EventModel;
 import br.com.ucs.laboratorio.gestao.application.exception.BusinessException;
 import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
@@ -17,7 +19,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,12 +76,11 @@ public class EventService {
         return MapperUtil.mapObject(eventRepository.save(event), EventResponse.class);
     }
 
-    public EventTotalizerResponse totalEvents(Long id, LocalDate initialDate, LocalDate finalDate) {
-        var events = eventRepository.findEventsByEquipmentAndDate(id, initialDate, finalDate);
-        var items = MapperUtil.mapList(events, EventTotalizerItemsResponse.class);
-        BigDecimal total = items.stream()
+    public EventTotalizerResponse totalEvents(EquipmentModel equipment, List<EventTotalizerItemsResponse> events) {
+        var equipmentResponse = MapperUtil.mapObject(equipment, EquipmentTotalizerResponse.class);
+        BigDecimal total = events.stream()
                 .map(EventTotalizerItemsResponse::getCostValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return new EventTotalizerResponse(id, total, items);
+        return new EventTotalizerResponse(total, equipmentResponse, events);
     }
 }

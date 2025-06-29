@@ -62,6 +62,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         var laboratory = laboratoryService.findById(userDto.getLaboratoryId());
         var userModel = modelMapper.map(userDto, UserModel.class);
+        userModel.setId(null);
         userModel.setLaboratory(laboratory);
         userModel.setPassword(encodedPassword);
         UserModel save = userRepository.save(userModel);

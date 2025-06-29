@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class EventTotalizerResponse {
 
-    private Long equipmentId;
-
     private BigDecimal total;
+
+    private EquipmentTotalizerResponse equipment;
 
     private List<EventTotalizerItemsResponse> eventItems;
 }

@@ -1,19 +1,16 @@
 package br.com.ucs.laboratorio.gestao.domain.dto.response;
 
 import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
-public class EquipmentResponse {
+@NoArgsConstructor
+public class EquipmentTotalizerResponse {
 
     private Long id;
 
@@ -31,13 +28,5 @@ public class EquipmentResponse {
 
     private LocalDate dateOfUse;
 
-    private LocalDate nextCalibrationDate;
-
-    private LocalDate nextMaintenanceDate;
-
     private TemplateResponse template;
-
-    private Long daysExpiration;
-
-    private List<EventResponse> events;
 }

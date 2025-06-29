@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EquipmentService {
@@ -79,11 +82,17 @@ public class EquipmentService {
 
     public List<EquipmentResponse> findExpirationEquipment(Long id) {
         LocalDate finalDate = LocalDate.now().plusDays(30);
-        var equipments = equipmentRepository.findExpiration(id, LocalDate.now(), finalDate);
+
+        List<EquipmentModel> equipments;
+        if (Objects.nonNull(id)){
+            equipments = equipmentRepository.findExpirationByLaboratoryId(id, LocalDate.now(), finalDate);
+        }else {
+            equipments = equipmentRepository.findExpiration(LocalDate.now(), finalDate);
+        }
 
         var equipmentResponses = MapperUtil.mapList(equipments, EquipmentResponse.class);
 
-        equipmentResponses.forEach(equip -> equip.setCalibrationExpiring(isBetween(equip.getNextCalibrationDate(), LocalDate.now(), finalDate)));
+        equipmentResponses.forEach(equip -> equip.setDaysExpiration(isBetween(equip.getNextCalibrationDate())));
 
         return equipmentResponses;
     }
@@ -105,7 +114,12 @@ public class EquipmentService {
         equipmentRepository.save(equipment);
     }
 
-    private boolean isBetween(LocalDate data, LocalDate initial, LocalDate fim) {
-        return data != null && !data.isBefore(initial) && !data.isAfter(fim);
+    private Long isBetween(LocalDate data) {
+        var now = LocalDate.now();
+        if (now.isAfter(data)){
+            return -1L;
+        }else {
+            return ChronoUnit.DAYS.between(data, now);
+        }
     }
 }

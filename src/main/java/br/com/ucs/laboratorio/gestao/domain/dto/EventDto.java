@@ -1,12 +1,10 @@
 package br.com.ucs.laboratorio.gestao.domain.dto;
 
+import br.com.ucs.laboratorio.gestao.domain.entity.EventModel;
 import br.com.ucs.laboratorio.gestao.domain.type.EventStatusType;
 import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import jakarta.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

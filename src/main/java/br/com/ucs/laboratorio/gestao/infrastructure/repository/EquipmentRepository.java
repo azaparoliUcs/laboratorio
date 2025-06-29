@@ -14,9 +14,15 @@ public interface EquipmentRepository extends JpaRepository<EquipmentModel, Long>
 
     @Query("SELECT e FROM EquipmentModel e WHERE e.laboratory.id = :laboratoryId AND " +
             "(e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
-            "e.nextMaintenanceDate BETWEEN :initialDate AND :finalDate)")
-    List<EquipmentModel> findExpiration(@Param("laboratoryId") Long laboratoryId,
-                                        @Param("initialDate") LocalDate initialDate,
+            "e.nextCalibrationDate < :initialDate)")
+    List<EquipmentModel> findExpirationByLaboratoryId(@Param("laboratoryId") Long laboratoryId,
+                                                      @Param("initialDate") LocalDate initialDate,
+                                                      @Param("finalDate") LocalDate finalDate);
+
+    @Query("SELECT e FROM EquipmentModel e WHERE " +
+            "(e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
+            "e.nextCalibrationDate < :initialDate)")
+    List<EquipmentModel> findExpiration(@Param("initialDate") LocalDate initialDate,
                                         @Param("finalDate") LocalDate finalDate);
 
     @Query("SELECT e FROM EquipmentModel e WHERE e.nextCalibrationDate = :date")

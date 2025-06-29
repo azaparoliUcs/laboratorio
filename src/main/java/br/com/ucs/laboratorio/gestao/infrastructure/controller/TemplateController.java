@@ -4,6 +4,7 @@ import br.com.ucs.laboratorio.gestao.domain.dto.TemplateDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.TemplateResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.TemplateService;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.domain.type.TemplateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,14 @@ public class TemplateController {
     public ResponseEntity<Void> delete(@PathVariable Long id){
         templateService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filter")
+    public List<TemplateResponse> filterTemplates(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) TemplateType templateType,
+            @RequestParam(required = false) Long categoryId
+    ) {
+        return templateService.filterTemplates(brand, templateType, categoryId);
     }
 }

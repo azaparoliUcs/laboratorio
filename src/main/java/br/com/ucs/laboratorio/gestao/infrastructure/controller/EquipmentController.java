@@ -38,8 +38,8 @@ public class EquipmentController {
         return ResponseEntity.ok(equipmentService.findByLaboratoryId(id));
     }
 
-    @GetMapping("/expiration/{id}")
-    public List<EquipmentResponse> findExirationEquipment(@PathVariable Long id) {
+    @GetMapping("/expiration")
+    public List<EquipmentResponse> findExirationEquipment(@RequestParam(required = false) Long id) {
         return equipmentService.findExpirationEquipment(id);
     }
 

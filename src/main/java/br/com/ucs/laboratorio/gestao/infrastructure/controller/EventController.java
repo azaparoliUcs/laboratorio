@@ -29,11 +29,6 @@ public class EventController {
         return ResponseEntity.ok(MapperUtil.mapObject(eventService.findById(id), EventResponse.class));
     }
 
-    @GetMapping("/total/{id}")
-    public ResponseEntity<EventTotalizerResponse> total(@PathVariable Long id, @RequestParam LocalDate initialDate, @RequestParam LocalDate finalDate){
-        return ResponseEntity.ok(eventService.totalEvents(id, initialDate, finalDate));
-    }
-
     @GetMapping
     public ResponseEntity<List<EventResponse>> findAll(){
         return ResponseEntity.ok(eventService.findAll());

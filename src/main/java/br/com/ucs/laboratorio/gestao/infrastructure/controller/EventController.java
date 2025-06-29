@@ -44,4 +44,9 @@ public class EventController {
         eventService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/equipment/{id}")
+    public List<EventResponse> findByEquipment(@PathVariable Long id){
+        return eventService.findByEquipmentId(id);
+    }
 }

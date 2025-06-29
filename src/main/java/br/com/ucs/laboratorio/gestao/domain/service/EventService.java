@@ -83,4 +83,8 @@ public class EventService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return new EventTotalizerResponse(total, equipmentResponse, events);
     }
+
+    public List<EventResponse> findByEquipmentId(Long id) {
+        return MapperUtil.mapList(eventRepository.findAllByEquipmentId(id), EventResponse.class);
+    }
 }

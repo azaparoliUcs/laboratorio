@@ -119,7 +119,7 @@ public class EquipmentService {
         if (now.isAfter(data)){
             return -1L;
         }else {
-            return ChronoUnit.DAYS.between(data, now);
+            return ChronoUnit.DAYS.between(now, data);
         }
     }
 }

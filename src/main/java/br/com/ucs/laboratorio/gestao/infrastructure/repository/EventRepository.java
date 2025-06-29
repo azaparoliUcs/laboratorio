@@ -13,4 +13,7 @@ public interface EventRepository extends JpaRepository<EventModel, Long> {
 
     @Query("SELECT e FROM EventModel e WHERE e.equipment.id = :id AND e.requestDate BETWEEN :initialDate AND :finalDate")
     List<EventModel> findEventsByEquipmentAndDate(Long id, LocalDate initialDate, LocalDate finalDate);
+
+    @Query("SELECT e FROM EventModel e WHERE e.equipment.id = :id")
+    List<EventModel> findAllByEquipmentId(Long id);
 }

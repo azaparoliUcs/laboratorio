@@ -2,6 +2,7 @@ package br.com.ucs.laboratorio.gestao.domain.service;
 
 import br.com.ucs.laboratorio.gestao.application.util.DateUtil;
 import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.domain.dao.EquipmentDao;
 import br.com.ucs.laboratorio.gestao.domain.dto.EquipmentDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
@@ -36,6 +37,9 @@ public class EquipmentService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private EquipmentDao equipmentDao;
 
     public EquipmentResponse create(EquipmentDto equipmentDto){
         var laboratory = laboratoryService.findById(equipmentDto.getLaboratoryId());
@@ -121,5 +125,9 @@ public class EquipmentService {
         }else {
             return ChronoUnit.DAYS.between(now, data);
         }
+    }
+
+    public List<EquipmentResponse> filter(Long laboratoryId, Long categoryId, EquipmentStatusType status) {
+        return MapperUtil.mapList(equipmentDao.findEquipment(laboratoryId, categoryId, status), EquipmentResponse.class);
     }
 }

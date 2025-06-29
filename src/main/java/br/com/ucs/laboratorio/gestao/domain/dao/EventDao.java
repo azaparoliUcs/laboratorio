@@ -37,7 +37,7 @@ public class EventDao {
         predicates.add(root.get("equipment").get("id").in(equipmentIds));
 
         if (eventType != null) {
-            predicates.add(cb.equal(root.get("eventType"), eventType));
+            predicates.add(cb.equal(root.get("status"), eventType));
         }
 
         if (startDate != null) {

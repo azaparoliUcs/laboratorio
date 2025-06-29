@@ -4,6 +4,8 @@ import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import br.com.ucs.laboratorio.gestao.domain.dto.EquipmentDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.EquipmentResponse;
 import br.com.ucs.laboratorio.gestao.domain.service.EquipmentService;
+import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
+import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,13 @@ public class EquipmentController {
     @PutMapping("/{id}")
     public ResponseEntity<EquipmentResponse> update(@PathVariable Long id, @RequestBody EquipmentDto equipmentDto){
         return ResponseEntity.ok(equipmentService.update(id, equipmentDto));
+    }
+
+    @GetMapping("filter")
+    public List<EquipmentResponse> filter(@RequestParam Long laboratoryId,
+                                          @RequestParam(required = false) Long categoryId,
+                                          @RequestParam(required = false) EquipmentStatusType status){
+        return equipmentService.filter(laboratoryId, categoryId, status);
     }
 
     @DeleteMapping("/{id}")

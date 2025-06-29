@@ -81,7 +81,7 @@ public class LaboratoryService {
                                                         LocalDate startDate,
                                                         LocalDate endDate) {
 
-        List<EquipmentModel> equipments = equipmentDao.findEquipment(laboratoryId, categoryId);
+        List<EquipmentModel> equipments = equipmentDao.findEquipment(laboratoryId, categoryId, null);
         List<Long> equipmentIds = equipments.stream().map(EquipmentModel::getId).toList();
 
         List<EventModel> allEvents = eventDao.findEventsByEquipments(equipmentIds, eventType, startDate, endDate);

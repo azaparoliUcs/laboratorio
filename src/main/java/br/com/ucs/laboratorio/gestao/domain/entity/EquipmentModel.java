@@ -40,6 +40,9 @@ public class EquipmentModel {
     @Column(name = "NR_SERIE")
     private String serialNumber;
 
+    @Column(name = "FL_CALIBRACAO")
+    public Boolean calibrationFlag = false;
+
     @Column(name = "DS_TAG")
     private String equipmentTag;
 

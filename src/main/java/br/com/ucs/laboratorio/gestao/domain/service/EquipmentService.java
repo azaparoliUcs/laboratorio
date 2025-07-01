@@ -49,9 +49,8 @@ public class EquipmentService {
 
         if (!template.getPeriodCalibrationType().equals(PeriodCalibrationType.NONE)){
             equipmentModel.setEquipmentStatusType(EquipmentStatusType.UNAVAILABLE);
+            equipmentModel.setCalibrationFlag(true);
         }
-        equipmentModel.setNextCalibrationDate(DateUtil.calculateNextPeriodCalibration(template.getPeriodCalibrationType()));
-        equipmentModel.setNextMaintenanceDate(DateUtil.calculateNextPeriodMaintenance(template.getPeriodMaintenanceType()));
 
         equipmentModel.setLaboratory(laboratory);
         var save = equipmentRepository.save(equipmentModel);
@@ -81,6 +80,7 @@ public class EquipmentService {
         equipment.setLaboratory(laboratoryService.findById(equipmentDto.getLaboratoryId()));
         equipment.setEquipmentTag(equipmentDto.getEquipmentTag());
         equipment.setPropertyNumber(equipmentDto.getPropertyNumber());
+        equipment.setCalibrationFlag(false);
         return MapperUtil.mapObject(equipmentRepository.save(equipment), EquipmentResponse.class);
     }
 
@@ -101,26 +101,34 @@ public class EquipmentService {
         return equipmentResponses;
     }
 
+    public void updateEquipment(EquipmentModel equipmentModel){
+        equipmentRepository.save(equipmentModel);
+    }
+
     public void updateStatus(Long id, EventModel eventModel){
         EquipmentModel equipment = findById(id);
         switch (eventModel.getEventType()){
             case CALIBRATION:
                 equipment.setNextCalibrationDate(DateUtil.calculateNextPeriodCalibration(equipment.getTemplate().getPeriodCalibrationType()));
                 equipment.setEquipmentStatusType(EquipmentStatusType.AVAILABLE);
+                equipment.setCalibrationFlag(false);
                 break;
             case MAINTENANCE:
                 equipment.setNextMaintenanceDate(DateUtil.calculateNextPeriodMaintenance(equipment.getTemplate().getPeriodMaintenanceType()));
-                if (!eventModel.getCalibrationRequested())
+                if (!eventModel.getCalibrationRequested()){
                     equipment.setEquipmentStatusType(EquipmentStatusType.AVAILABLE);
+                    equipment.setCalibrationFlag(false);
+                }
             default:
                 equipment.setEquipmentStatusType(EquipmentStatusType.AVAILABLE);
+                equipment.setCalibrationFlag(false);
         }
         equipmentRepository.save(equipment);
     }
 
     private Long isBetween(LocalDate data) {
         var now = LocalDate.now();
-        if (now.isAfter(data)){
+        if (Objects.isNull(data) || now.isAfter(data)){
             return -1L;
         }else {
             return ChronoUnit.DAYS.between(now, data);

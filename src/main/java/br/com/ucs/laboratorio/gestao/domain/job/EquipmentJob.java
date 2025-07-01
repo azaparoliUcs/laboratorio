@@ -18,7 +18,10 @@ public class EquipmentJob {
     public void executeEquipmentJob() {
         var equipmentsExpired = equipmentRepository.findEquipmentsExpired(LocalDate.now().minusDays(1));
 
-        equipmentsExpired.forEach(equip -> equip.setEquipmentStatusType(EquipmentStatusType.UNAVAILABLE));
+        equipmentsExpired.forEach(equip -> {
+            equip.setEquipmentStatusType(EquipmentStatusType.UNAVAILABLE);
+            equip.setCalibrationFlag(false);
+        });
 
         equipmentRepository.saveAll(equipmentsExpired);
     }

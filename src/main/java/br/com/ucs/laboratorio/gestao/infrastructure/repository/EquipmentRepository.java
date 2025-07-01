@@ -13,15 +13,15 @@ import java.util.List;
 public interface EquipmentRepository extends JpaRepository<EquipmentModel, Long> {
 
     @Query("SELECT e FROM EquipmentModel e WHERE e.laboratory.id = :laboratoryId AND " +
-            "(e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
-            "e.nextCalibrationDate < :initialDate)")
+            "(((e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
+            "e.nextCalibrationDate < :initialDate) AND e.calibrationFlag = true) OR e.calibrationFlag = true)")
     List<EquipmentModel> findExpirationByLaboratoryId(@Param("laboratoryId") Long laboratoryId,
                                                       @Param("initialDate") LocalDate initialDate,
                                                       @Param("finalDate") LocalDate finalDate);
 
     @Query("SELECT e FROM EquipmentModel e WHERE " +
-            "(e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
-            "e.nextCalibrationDate < :initialDate)")
+            "((e.nextCalibrationDate BETWEEN :initialDate AND :finalDate OR " +
+            "e.nextCalibrationDate < :initialDate) AND e.calibrationFlag = true) OR e.calibrationFlag = true")
     List<EquipmentModel> findExpiration(@Param("initialDate") LocalDate initialDate,
                                         @Param("finalDate") LocalDate finalDate);
 

@@ -42,6 +42,10 @@ public class EventService {
                 !equipment.getTemplate().getPeriodCalibrationType().equals(PeriodCalibrationType.NONE)){
             eventModel.setCalibrationRequested(true);
         }
+        if (eventDto.getEventType().equals(EventType.CALIBRATION)){
+            equipment.setCalibrationFlag(false);
+            equipmentService.updateEquipment(equipment);
+        }
         eventModel.setEquipment(equipment);
         var save = eventRepository.save(eventModel);
         return modelMapper.map(save, EventResponse.class);

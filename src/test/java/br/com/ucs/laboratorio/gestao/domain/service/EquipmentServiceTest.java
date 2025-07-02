@@ -11,6 +11,7 @@ import br.com.ucs.laboratorio.gestao.domain.entity.TemplateModel;
 import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import br.com.ucs.laboratorio.gestao.domain.type.EventType;
 import br.com.ucs.laboratorio.gestao.domain.type.PeriodCalibrationType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodMaintenanceType;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EquipmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,7 @@ class EquipmentServiceTest {
         templateModel = new TemplateModel();
         templateModel.setId(1L);
         templateModel.setPeriodCalibrationType(PeriodCalibrationType.NONE);
+        templateModel.setPeriodMaintenanceType(PeriodMaintenanceType.NONE);
 
         equipmentModel = new EquipmentModel();
         equipmentModel.setId(1L);

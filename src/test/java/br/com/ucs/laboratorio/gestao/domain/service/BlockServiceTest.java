@@ -12,125 +12,192 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-public class BlockServiceTest {
-
-    @InjectMocks
-    private BlockService blockService;
+@ExtendWith(MockitoExtension.class)
+class BlockServiceTest {
 
     @Mock
     private BlockRepository blockRepository;
 
-    @Mock
-    private BlockModel mockBlockModel;
+    @InjectMocks
+    private BlockService blockService;
+
+    private BlockModel blockModel;
+    private BlockDto blockDto;
+    private BlockResponse blockResponse;
 
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        blockModel = new BlockModel();
+        blockModel.setId(1L);
+        blockModel.setDescription("Bloco A");
+
+        blockDto = new BlockDto();
+        blockDto.setDescription("Bloco A");
+
+        blockResponse = new BlockResponse();
+        blockResponse.setId(1L);
+        blockResponse.setDescription("Bloco A");
     }
 
     @Test
-    void testFindById_success() {
+    void findById_WhenBlockExists_ShouldReturnBlock() {
+        // Given
         Long id = 1L;
-        BlockModel model = new BlockModel();
-        when(blockRepository.findById(id)).thenReturn(Optional.of(model));
+        when(blockRepository.findById(id)).thenReturn(Optional.of(blockModel));
 
+        // When
         BlockModel result = blockService.findById(id);
 
-        assertEquals(model, result);
+        // Then
+        assertNotNull(result);
+        assertEquals(blockModel.getId(), result.getId());
+        assertEquals(blockModel.getDescription(), result.getDescription());
         verify(blockRepository).findById(id);
     }
 
     @Test
-    void testFindById_notFound() {
-        when(blockRepository.findById(any())).thenReturn(Optional.empty());
+    void findById_WhenBlockDoesNotExist_ShouldThrowBusinessException() {
+        // Given
+        Long id = 1L;
+        when(blockRepository.findById(id)).thenReturn(Optional.empty());
 
-        BusinessException exception = assertThrows(BusinessException.class, () -> blockService.findById(1L));
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> blockService.findById(id));
         assertEquals("Bloco nao existe", exception.getMessage());
+        verify(blockRepository).findById(id);
     }
 
     @Test
-    void testCreate_success() {
-        BlockDto dto = new BlockDto();
-        BlockModel model = new BlockModel();
-        BlockModel savedModel = new BlockModel();
-        BlockResponse response = new BlockResponse();
+    void create_ShouldCreateBlockAndReturnResponse() {
+        // Given
+        when(blockRepository.save(any(BlockModel.class))).thenReturn(blockModel);
 
-        try (MockedStatic<MapperUtil> mapperUtil = mockStatic(MapperUtil.class)) {
-            mapperUtil.when(() -> MapperUtil.mapObject(dto, BlockModel.class)).thenReturn(model);
-            when(blockRepository.save(model)).thenReturn(savedModel);
-            mapperUtil.when(() -> MapperUtil.mapObject(savedModel, BlockResponse.class)).thenReturn(response);
+        try (MockedStatic<MapperUtil> mockedMapperUtil = mockStatic(MapperUtil.class)) {
+            mockedMapperUtil.when(() -> MapperUtil.mapObject(blockDto, BlockModel.class))
+                    .thenReturn(blockModel);
+            mockedMapperUtil.when(() -> MapperUtil.mapObject(blockModel, BlockResponse.class))
+                    .thenReturn(blockResponse);
 
-            BlockResponse result = blockService.create(dto);
+            // When
+            BlockResponse result = blockService.create(blockDto);
 
-            assertEquals(response, result);
+            // Then
+            assertNotNull(result);
+            assertEquals(blockResponse.getId(), result.getId());
+            assertEquals(blockResponse.getDescription(), result.getDescription());
+            verify(blockRepository).save(any(BlockModel.class));
         }
     }
 
     @Test
-    void testFindAll_success() {
-        List<BlockModel> models = Arrays.asList(new BlockModel(), new BlockModel());
-        List<BlockResponse> responses = Arrays.asList(new BlockResponse(), new BlockResponse());
+    void findAll_ShouldReturnListOfBlockResponses() {
+        // Given
+        List<BlockModel> blockList = Arrays.asList(blockModel);
+        List<BlockResponse> expectedResponses = Arrays.asList(blockResponse);
 
-        when(blockRepository.findAll()).thenReturn(models);
+        when(blockRepository.findAll()).thenReturn(blockList);
 
-        try (MockedStatic<MapperUtil> mapperUtil = mockStatic(MapperUtil.class)) {
-            mapperUtil.when(() -> MapperUtil.mapList(models, BlockResponse.class)).thenReturn(responses);
+        try (MockedStatic<MapperUtil> mockedMapperUtil = mockStatic(MapperUtil.class)) {
+            mockedMapperUtil.when(() -> MapperUtil.mapList(blockList, BlockResponse.class))
+                    .thenReturn(expectedResponses);
 
+            // When
             List<BlockResponse> result = blockService.findAll();
 
-            assertEquals(2, result.size());
+            // Then
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(1, result.size());
+            assertEquals(expectedResponses.get(0).getId(), result.get(0).getId());
+            verify(blockRepository).findAll();
         }
     }
 
     @Test
-    void testUpdate_success() {
+    void update_WhenBlockExists_ShouldUpdateAndReturnResponse() {
+        // Given
         Long id = 1L;
-        BlockDto dto = new BlockDto();
-        dto.setDescription("New Description");
+        String newDescription = "Bloco A Atualizado";
+        blockDto.setDescription(newDescription);
 
-        BlockModel model = new BlockModel();
-        model.setDescription("Old Description");
+        BlockModel updatedBlock = new BlockModel();
+        updatedBlock.setId(id);
+        updatedBlock.setDescription(newDescription);
 
-        BlockModel savedModel = new BlockModel();
-        savedModel.setDescription("New Description");
+        BlockResponse updatedResponse = new BlockResponse();
+        updatedResponse.setId(id);
+        updatedResponse.setDescription(newDescription);
 
-        BlockResponse response = new BlockResponse();
+        when(blockRepository.findById(id)).thenReturn(Optional.of(blockModel));
+        when(blockRepository.save(any(BlockModel.class))).thenReturn(updatedBlock);
 
-        when(blockRepository.findById(id)).thenReturn(Optional.of(model));
-        when(blockRepository.save(model)).thenReturn(savedModel);
+        try (MockedStatic<MapperUtil> mockedMapperUtil = mockStatic(MapperUtil.class)) {
+            mockedMapperUtil.when(() -> MapperUtil.mapObject(updatedBlock, BlockResponse.class))
+                    .thenReturn(updatedResponse);
 
-        try (MockedStatic<MapperUtil> mapperUtil = mockStatic(MapperUtil.class)) {
-            mapperUtil.when(() -> MapperUtil.mapObject(savedModel, BlockResponse.class)).thenReturn(response);
+            // When
+            BlockResponse result = blockService.update(id, blockDto);
 
-            BlockResponse result = blockService.update(id, dto);
-
-            assertEquals(response, result);
-            assertEquals("New Description", model.getDescription());
+            // Then
+            assertNotNull(result);
+            assertEquals(updatedResponse.getId(), result.getId());
+            assertEquals(newDescription, result.getDescription());
+            verify(blockRepository).findById(id);
+            verify(blockRepository).save(any(BlockModel.class));
         }
     }
 
     @Test
-    void testDelete_success() {
+    void update_WhenBlockDoesNotExist_ShouldThrowBusinessException() {
+        // Given
         Long id = 1L;
-        BlockModel model = new BlockModel();
+        when(blockRepository.findById(id)).thenReturn(Optional.empty());
 
-        when(blockRepository.findById(id)).thenReturn(Optional.of(model));
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> blockService.update(id, blockDto));
+        assertEquals("Bloco nao existe", exception.getMessage());
+        verify(blockRepository).findById(id);
+        verify(blockRepository, never()).save(any(BlockModel.class));
+    }
 
+    @Test
+    void delete_WhenBlockExists_ShouldDeleteBlock() {
+        // Given
+        Long id = 1L;
+        when(blockRepository.findById(id)).thenReturn(Optional.of(blockModel));
+
+        // When
         blockService.delete(id);
 
-        verify(blockRepository).delete(model);
+        // Then
+        verify(blockRepository).findById(id);
+        verify(blockRepository).delete(blockModel);
+    }
+
+    @Test
+    void delete_WhenBlockDoesNotExist_ShouldThrowBusinessException() {
+        // Given
+        Long id = 1L;
+        when(blockRepository.findById(id)).thenReturn(Optional.empty());
+
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> blockService.delete(id));
+        assertEquals("Bloco nao existe", exception.getMessage());
+        verify(blockRepository).findById(id);
+        verify(blockRepository, never()).delete(any(BlockModel.class));
     }
 }

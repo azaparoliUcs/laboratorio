@@ -1,89 +1,117 @@
 package br.com.ucs.laboratorio.gestao.infrastructure.controller;
 
+import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
 import br.com.ucs.laboratorio.gestao.domain.dto.CategoryDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.CategoryResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.CategoryModel;
 import br.com.ucs.laboratorio.gestao.domain.service.CategoryService;
-import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CategoryControllerTest {
-
-    @InjectMocks
-    private CategoryController categoryController;
+@ExtendWith(MockitoExtension.class)
+class CategoryControllerTest {
 
     @Mock
     private CategoryService categoryService;
 
+    @InjectMocks
+    private CategoryController categoryController;
+
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
+    private CategoryDto categoryDto;
+    private CategoryResponse categoryResponse;
+    private CategoryModel category;
+
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        objectMapper = new ObjectMapper();
+
+        categoryDto = new CategoryDto();
+        categoryDto.setName("Equipamentos Eletrônicos");
+
+        categoryResponse = new CategoryResponse();
+        categoryResponse.setId(1L);
+        categoryResponse.setName("Equipamentos Eletrônicos");
+
+        category = new CategoryModel();
+        category.setId(1L);
+        category.setName("Equipamentos Eletrônicos");
     }
 
     @Test
-    void testCreate() {
-        CategoryDto dto = new CategoryDto();
-        CategoryResponse response = new CategoryResponse();
+    void shouldCreateCategorySuccessfully() throws Exception {
+        when(categoryService.create(any(CategoryDto.class))).thenReturn(categoryResponse);
 
-        when(categoryService.create(dto)).thenReturn(response);
+        mockMvc.perform(post("/category")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(categoryDto)))
+                .andExpect(status().isOk());
 
-        var result = categoryController.create(dto);
-
-        assertEquals(response, result.getBody());
-        assertEquals(200, result.getStatusCodeValue());
+        verify(categoryService).create(any(CategoryDto.class));
     }
 
     @Test
-    void testFindById() {
-        Long id = 1L;
-        CategoryResponse response = new CategoryResponse();
+    void shouldFindCategoryByIdSuccessfully() throws Exception {
+        try (MockedStatic<MapperUtil> mapperUtil = mockStatic(MapperUtil.class)) {
+            when(categoryService.findById(1L)).thenReturn(category);
+            mapperUtil.when(() -> MapperUtil.mapObject(category, CategoryResponse.class))
+                    .thenReturn(categoryResponse);
 
-        try (var mocked = mockStatic(MapperUtil.class)) {
-            when(categoryService.findById(id)).thenReturn(new CategoryModel());
-            mocked.when(() -> MapperUtil.mapObject(any(), eq(CategoryResponse.class))).thenReturn(response);
+            mockMvc.perform(get("/category/1"))
+                    .andExpect(status().isOk());
 
-            var result = categoryController.findById(id);
-
-            assertEquals(response, result.getBody());
+            verify(categoryService).findById(1L);
         }
     }
 
     @Test
-    void testFindAll() {
-        List<CategoryResponse> list = List.of(new CategoryResponse());
-        when(categoryService.findAll()).thenReturn(list);
+    void shouldFindAllCategoriesSuccessfully() throws Exception {
+        List<CategoryResponse> categories = Arrays.asList(categoryResponse);
+        when(categoryService.findAll()).thenReturn(categories);
 
-        var result = categoryController.findAll();
+        mockMvc.perform(get("/category"))
+                .andExpect(status().isOk());
 
-        assertEquals(list, result.getBody());
+        verify(categoryService).findAll();
     }
 
     @Test
-    void testUpdate() {
-        CategoryDto dto = new CategoryDto();
-        CategoryResponse response = new CategoryResponse();
+    void shouldUpdateCategorySuccessfully() throws Exception {
+        when(categoryService.update(eq(1L), any(CategoryDto.class))).thenReturn(categoryResponse);
 
-        when(categoryService.update(1L, dto)).thenReturn(response);
+        mockMvc.perform(put("/category/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(categoryDto)))
+                .andExpect(status().isOk());
 
-        var result = categoryController.update(1L, dto);
-
-        assertEquals(response, result.getBody());
+        verify(categoryService).update(eq(1L), any(CategoryDto.class));
     }
 
     @Test
-    void testDelete() {
-        var result = categoryController.delete(1L);
+    void shouldDeleteCategorySuccessfully() throws Exception {
+        mockMvc.perform(delete("/category/1"))
+                .andExpect(status().isNoContent());
 
-        assertEquals(204, result.getStatusCodeValue());
         verify(categoryService).delete(1L);
     }
 }

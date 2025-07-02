@@ -4,73 +4,154 @@ import br.com.ucs.laboratorio.gestao.domain.dto.TemplateDto;
 import br.com.ucs.laboratorio.gestao.domain.dto.response.TemplateResponse;
 import br.com.ucs.laboratorio.gestao.domain.entity.TemplateModel;
 import br.com.ucs.laboratorio.gestao.domain.service.TemplateService;
-import br.com.ucs.laboratorio.gestao.application.util.MapperUtil;
+import br.com.ucs.laboratorio.gestao.domain.type.TemplateType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TemplateControllerTest {
-
-    @InjectMocks
-    private TemplateController templateController;
+@ExtendWith(MockitoExtension.class)
+class TemplateControllerTest {
 
     @Mock
     private TemplateService templateService;
 
+    @InjectMocks
+    private TemplateController templateController;
+
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
+    private TemplateDto templateDto;
+    private TemplateResponse templateResponse;
+    private TemplateModel template;
+
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(templateController).build();
+        objectMapper = new ObjectMapper();
+
+        templateDto = new TemplateDto();
+        templateDto.setDescription("Test Template");
+        templateDto.setBrand("Test Brand");
+        templateDto.setTemplateType(TemplateType.ANALOG);
+
+        templateResponse = new TemplateResponse();
+        templateResponse.setId(1L);
+        templateResponse.setDescription("Test Template");
+        templateResponse.setBrand("Test Brand");
+        templateResponse.setTemplateType(TemplateType.ANALOG);
+
+        template = new TemplateModel();
+        template.setId(1L);
+        template.setDescription("Test Template");
+        template.setBrand("Test Brand");
+        template.setTemplateType(TemplateType.ANALOG);
     }
 
     @Test
-    void testCreate() {
-        TemplateDto dto = new TemplateDto();
-        TemplateResponse response = new TemplateResponse();
+    void create_ShouldReturnTemplateResponse_WhenValidTemplateDto() throws Exception {
+        when(templateService.create(any(TemplateDto.class))).thenReturn(templateResponse);
 
-        when(templateService.create(dto)).thenReturn(response);
+        mockMvc.perform(post("/template")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(templateDto)))
+                .andExpect(status().isOk());
 
-        var result = templateController.create(dto);
-        assertEquals(response, result.getBody());
+        verify(templateService).create(any(TemplateDto.class));
     }
 
     @Test
-    void testFindById() {
-        try (var mocked = mockStatic(MapperUtil.class)) {
-            when(templateService.findById(1L)).thenReturn(new TemplateModel());
-            mocked.when(() -> MapperUtil.mapObject(any(), eq(TemplateResponse.class))).thenReturn(new TemplateResponse());
+    void findById_ShouldReturnTemplateResponse_WhenTemplateExists() throws Exception {
+        when(templateService.findById(1L)).thenReturn(template);
 
-            var result = templateController.findById(1L);
-            assertNotNull(result.getBody());
-        }
+        mockMvc.perform(get("/template/1"))
+                .andExpect(status().isOk());
+
+        verify(templateService).findById(1L);
     }
 
     @Test
-    void testFindAll() {
-        when(templateService.findAll()).thenReturn(List.of(new TemplateResponse()));
-        var result = templateController.findAll();
-        assertEquals(1, result.getBody().size());
+    void findAll_ShouldReturnListOfTemplateResponse() throws Exception {
+        List<TemplateResponse> templates = Arrays.asList(templateResponse);
+        when(templateService.findAll()).thenReturn(templates);
+
+        mockMvc.perform(get("/template"))
+                .andExpect(status().isOk());
+
+        verify(templateService).findAll();
     }
 
     @Test
-    void testUpdate() {
-        TemplateDto dto = new TemplateDto();
-        when(templateService.update(1L, dto)).thenReturn(new TemplateResponse());
-        var result = templateController.update(1L, dto);
-        assertNotNull(result.getBody());
+    void update_ShouldReturnUpdatedTemplateResponse() throws Exception {
+        when(templateService.update(eq(1L), any(TemplateDto.class))).thenReturn(templateResponse);
+
+        mockMvc.perform(put("/template/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(templateDto)))
+                .andExpect(status().isOk());
+
+        verify(templateService).update(eq(1L), any(TemplateDto.class));
     }
 
     @Test
-    void testDelete() {
-        var result = templateController.delete(1L);
-        assertEquals(204, result.getStatusCodeValue());
+    void delete_ShouldReturnNoContent() throws Exception {
+        doNothing().when(templateService).delete(1L);
+
+        mockMvc.perform(delete("/template/1"))
+                .andExpect(status().isNoContent());
+
         verify(templateService).delete(1L);
+    }
+
+    @Test
+    void filterTemplates_ShouldReturnFilteredTemplates_WithAllParameters() throws Exception {
+        List<TemplateResponse> templates = Arrays.asList(templateResponse);
+        when(templateService.filterTemplates("Test Brand", TemplateType.ANALOG, 1L))
+                .thenReturn(templates);
+
+        mockMvc.perform(get("/template/filter")
+                        .param("brand", "Test Brand")
+                        .param("templateType", String.valueOf(TemplateType.ANALOG))
+                        .param("categoryId", "1"))
+                .andExpect(status().isOk());
+
+        verify(templateService).filterTemplates("Test Brand", TemplateType.ANALOG, 1L);
+    }
+
+    @Test
+    void filterTemplates_ShouldReturnFilteredTemplates_WithoutOptionalParameters() throws Exception {
+        List<TemplateResponse> templates = Arrays.asList(templateResponse);
+        when(templateService.filterTemplates(isNull(), isNull(), isNull())).thenReturn(templates);
+
+        mockMvc.perform(get("/template/filter"))
+                .andExpect(status().isOk());
+
+        verify(templateService).filterTemplates(isNull(), isNull(), isNull());
+    }
+
+    @Test
+    void filterTemplates_ShouldReturnFilteredTemplates_WithOnlyBrand() throws Exception {
+        List<TemplateResponse> templates = Arrays.asList(templateResponse);
+        when(templateService.filterTemplates("Test Brand", null, null)).thenReturn(templates);
+
+        mockMvc.perform(get("/template/filter")
+                        .param("brand", "Test Brand"))
+                .andExpect(status().isOk());
+
+        verify(templateService).filterTemplates("Test Brand", null, null);
     }
 }

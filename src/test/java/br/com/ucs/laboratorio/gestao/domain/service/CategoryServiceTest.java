@@ -12,24 +12,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
-
-    @InjectMocks
-    private CategoryService categoryService;
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -37,95 +33,185 @@ class CategoryServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @InjectMocks
+    private CategoryService categoryService;
+
+    private CategoryModel categoryModel;
+    private CategoryDto categoryDto;
+    private CategoryResponse categoryResponse;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        categoryModel = CategoryModel.builder()
+                .id(1L)
+                .name("Categoria Teste")
+                .build();
+
+        categoryDto = new CategoryDto();
+        categoryDto.setName("Categoria Teste");
+
+        categoryResponse = new CategoryResponse();
+        categoryResponse.setId(1L);
+        categoryResponse.setName("Categoria Teste");
     }
 
     @Test
-    void testFindById_success() {
+    void findById_WhenCategoryExists_ShouldReturnCategory() {
+        // Given
         Long id = 1L;
-        CategoryModel model = new CategoryModel();
-        when(categoryRepository.findById(id)).thenReturn(Optional.of(model));
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(categoryModel));
 
+        // When
         CategoryModel result = categoryService.findById(id);
 
-        assertEquals(model, result);
+        // Then
+        assertNotNull(result);
+        assertEquals(categoryModel.getId(), result.getId());
+        assertEquals(categoryModel.getName(), result.getName());
         verify(categoryRepository).findById(id);
     }
 
     @Test
-    void testFindById_notFound() {
-        when(categoryRepository.findById(any())).thenReturn(Optional.empty());
+    void findById_WhenCategoryDoesNotExist_ShouldThrowBusinessException() {
+        // Given
+        Long id = 1L;
+        when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        BusinessException exception = assertThrows(BusinessException.class, () -> categoryService.findById(1L));
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> categoryService.findById(id));
         assertEquals("Categoria nao existe", exception.getMessage());
+        verify(categoryRepository).findById(id);
     }
 
     @Test
-    void testCreate_success() {
-        CategoryDto dto = new CategoryDto();
-        dto.setName("Test Category");
+    void create_ShouldCreateCategoryAndReturnResponse() {
+        // Given
+        when(categoryRepository.save(any(CategoryModel.class))).thenReturn(categoryModel);
+        when(modelMapper.map(categoryModel, CategoryResponse.class)).thenReturn(categoryResponse);
 
-        CategoryModel savedModel = CategoryModel.builder().name("Test Category").build();
-        CategoryResponse response = new CategoryResponse();
+        // When
+        CategoryResponse result = categoryService.create(categoryDto);
 
-        when(categoryRepository.save(any(CategoryModel.class))).thenReturn(savedModel);
-        when(modelMapper.map(savedModel, CategoryResponse.class)).thenReturn(response);
-
-        CategoryResponse result = categoryService.create(dto);
-
-        assertEquals(response, result);
+        // Then
+        assertNotNull(result);
+        assertEquals(categoryResponse.getId(), result.getId());
+        assertEquals(categoryResponse.getName(), result.getName());
         verify(categoryRepository).save(any(CategoryModel.class));
+        verify(modelMapper).map(categoryModel, CategoryResponse.class);
     }
 
     @Test
-    void testFindAll_success() {
-        List<CategoryModel> models = Arrays.asList(new CategoryModel(), new CategoryModel());
-        List<CategoryResponse> responses = Arrays.asList(new CategoryResponse(), new CategoryResponse());
+    void findAll_ShouldReturnListOfCategoryResponses() {
+        // Given
+        List<CategoryModel> categoryList = Arrays.asList(categoryModel);
+        List<CategoryResponse> expectedResponses = Arrays.asList(categoryResponse);
 
-        when(categoryRepository.findAll()).thenReturn(models);
+        when(categoryRepository.findAll()).thenReturn(categoryList);
 
-        try (MockedStatic<MapperUtil> mocked = mockStatic(MapperUtil.class)) {
-            mocked.when(() -> MapperUtil.mapList(models, CategoryResponse.class)).thenReturn(responses);
+        try (MockedStatic<MapperUtil> mockedMapperUtil = mockStatic(MapperUtil.class)) {
+            mockedMapperUtil.when(() -> MapperUtil.mapList(categoryList, CategoryResponse.class))
+                    .thenReturn(expectedResponses);
 
+            // When
             List<CategoryResponse> result = categoryService.findAll();
 
-            assertEquals(2, result.size());
+            // Then
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(1, result.size());
+            assertEquals(expectedResponses.get(0).getId(), result.get(0).getId());
+            verify(categoryRepository).findAll();
         }
     }
 
     @Test
-    void testDelete_success() {
+    void delete_ShouldDeleteCategory() {
+        // Given
         Long id = 1L;
+
+        // When
         categoryService.delete(id);
+
+        // Then
         verify(categoryRepository).deleteById(id);
     }
 
     @Test
-    void testUpdate_success() {
+    void update_WhenCategoryExists_ShouldUpdateAndReturnResponse() {
+        // Given
         Long id = 1L;
-        CategoryDto dto = new CategoryDto();
-        dto.setName("Updated");
+        String newName = "Categoria Atualizada";
+        categoryDto.setName(newName);
 
-        CategoryModel model = new CategoryModel();
-        model.setName("Old");
+        CategoryModel updatedCategory = CategoryModel.builder()
+                .id(id)
+                .name(newName)
+                .build();
 
-        CategoryModel updatedModel = new CategoryModel();
-        updatedModel.setName("Updated");
+        CategoryResponse updatedResponse = new CategoryResponse();
+        updatedResponse.setId(id);
+        updatedResponse.setName(newName);
 
-        CategoryResponse response = new CategoryResponse();
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(categoryModel));
+        when(categoryRepository.save(any(CategoryModel.class))).thenReturn(updatedCategory);
 
-        when(categoryRepository.findById(id)).thenReturn(Optional.of(model));
-        when(categoryRepository.save(model)).thenReturn(updatedModel);
+        try (MockedStatic<MapperUtil> mockedMapperUtil = mockStatic(MapperUtil.class)) {
+            mockedMapperUtil.when(() -> MapperUtil.mapObject(updatedCategory, CategoryResponse.class))
+                    .thenReturn(updatedResponse);
 
-        try (MockedStatic<MapperUtil> mocked = mockStatic(MapperUtil.class)) {
-            mocked.when(() -> MapperUtil.mapObject(updatedModel, CategoryResponse.class)).thenReturn(response);
+            // When
+            CategoryResponse result = categoryService.update(id, categoryDto);
 
-            CategoryResponse result = categoryService.update(id, dto);
-
-            assertEquals(response, result);
-            assertEquals("Updated", model.getName());
+            // Then
+            assertNotNull(result);
+            assertEquals(updatedResponse.getId(), result.getId());
+            assertEquals(newName, result.getName());
+            verify(categoryRepository).findById(id);
+            verify(categoryRepository).save(any(CategoryModel.class));
         }
+    }
+
+    @Test
+    void update_WhenCategoryDoesNotExist_ShouldThrowBusinessException() {
+        // Given
+        Long id = 1L;
+        when(categoryRepository.findById(id)).thenReturn(Optional.empty());
+
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> categoryService.update(id, categoryDto));
+        assertEquals("Categoria nao existe", exception.getMessage());
+        verify(categoryRepository).findById(id);
+        verify(categoryRepository, never()).save(any(CategoryModel.class));
+    }
+
+    @Test
+    void create_WhenNameIsProvided_ShouldBuildCategoryCorrectly() {
+        // Given
+        String categoryName = "Nova Categoria";
+        categoryDto.setName(categoryName);
+
+        CategoryModel newCategory = CategoryModel.builder()
+                .name(categoryName)
+                .build();
+        newCategory.setId(2L);
+
+        CategoryResponse newResponse = new CategoryResponse();
+        newResponse.setId(2L);
+        newResponse.setName(categoryName);
+
+        when(categoryRepository.save(any(CategoryModel.class))).thenReturn(newCategory);
+        when(modelMapper.map(newCategory, CategoryResponse.class)).thenReturn(newResponse);
+
+        // When
+        CategoryResponse result = categoryService.create(categoryDto);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2L, result.getId());
+        assertEquals(categoryName, result.getName());
+        verify(categoryRepository).save(argThat(category ->
+                category.getName().equals(categoryName)));
     }
 }

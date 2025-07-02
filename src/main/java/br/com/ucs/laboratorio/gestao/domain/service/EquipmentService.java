@@ -9,6 +9,7 @@ import br.com.ucs.laboratorio.gestao.domain.entity.EquipmentModel;
 import br.com.ucs.laboratorio.gestao.domain.entity.EventModel;
 import br.com.ucs.laboratorio.gestao.domain.type.EquipmentStatusType;
 import br.com.ucs.laboratorio.gestao.domain.type.PeriodCalibrationType;
+import br.com.ucs.laboratorio.gestao.domain.type.PeriodMaintenanceType;
 import br.com.ucs.laboratorio.gestao.infrastructure.repository.EquipmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class EquipmentService {
             equipmentModel.setEquipmentStatusType(EquipmentStatusType.UNAVAILABLE);
             equipmentModel.setCalibrationFlag(true);
         }
+
+        if (!template.getPeriodMaintenanceType().equals(PeriodMaintenanceType.NONE))
+            equipmentModel.setNextMaintenanceDate(DateUtil.calculateNextPeriodMaintenance(template.getPeriodMaintenanceType()));
 
         equipmentModel.setLaboratory(laboratory);
         var save = equipmentRepository.save(equipmentModel);
